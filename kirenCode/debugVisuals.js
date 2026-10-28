@@ -5,11 +5,11 @@ function setup(){
 let currX = Math.random()*400
 let currY = 375
 let currZ = 1200
-let point = renderPoint(currX, currY, currZ)
+let point = adjForPerspective(currX, currY, currZ)
 function draw(){
     background(200)
     stroke(0)
-    point = renderPoint(currX, currY, currZ)
+    point = adjForPerspective(currX, currY, currZ)
     circle(point.x, point.y, 50 * point.scale)
     currZ -= 10
     if (currZ < 0){
