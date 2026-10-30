@@ -32,7 +32,7 @@ class enemy {
         }
         this.frameY = 0;
         this.frameX = this.current_frame * this.spriteW;
-        if(frameCount % 3 == 0) {
+        if(frameCount % 4 == 0) {
             if (this.current_frame == this.total_frames) {
                 this.current_frame = 0;
             } else {
@@ -57,7 +57,7 @@ class asteroid extends enemy {
         this.frameX;
         this.frameY;
         this.current_frame = 0;
-        this.total_frames = 8;
+        this.total_frames = 6;
         
     }
 }
