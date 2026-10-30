@@ -14,7 +14,7 @@ let vanishingPoint = { x: canvasWidth / 2, y: canvasHeight / 2 , z: canvasDepth}
 //Takes in a 3d x,y,z coordinate and returns an approriate x and y for the center of the object to be rendered at
 //as well as a scale value from 0-1
 function adjForPerspective(x,y,z){
-    let scale = 1 - (z / vanishingPoint.z)
+    let scale = (vanishingPoint.z - z) / (vanishingPoint.z + z)
     let newX = vanishingPoint.x + (x - vanishingPoint.x) * scale
     let newY = vanishingPoint.y + (y - vanishingPoint.y) * scale
     let alpha = 255
@@ -26,19 +26,19 @@ function adjForPerspective(x,y,z){
 }
 //Just returns the x value changed based on the objects distance from camera
 function adjX(x,z){
-    let scale = 1 - (z / vanishingPoint.z)
+    let scale = (vanishingPoint.z - z) / (vanishingPoint.z + z)
     let newX = vanishingPoint.x + (x - vanishingPoint.x) * scale
     return(newX)
 }
 //Just returns the y value changed based on the objects distance from camera
 function adjY(y,z){
-    let scale = 1 - (z / vanishingPoint.z)
+    let scale = (vanishingPoint.z - z) / (vanishingPoint.z + z)
     let newY = vanishingPoint.y + (y - vanishingPoint.y) * scale
     return(newY)
 }
 //Just returns the scale from 0-1 based on the objects distance from camera
 function adjScale(z){
-    let scale = 1 - (z / vanishingPoint.z)
+    let scale = (vanishingPoint.z - z) / (vanishingPoint.z + z)
     return(scale)
 }
 //Just returns the alpha value based on the objects distance from camera
