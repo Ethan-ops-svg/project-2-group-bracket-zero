@@ -43,5 +43,13 @@ function adjY(y,z){
 //Just returns the scale from 0-1 based on the objects distance from camera
 function adjScale(z){
     let scale = (vanishingPoint.z - z) / (vanishingPoint.z + z)
+    if (z > canvasDepth - hideObjDelay){
+        scale = 0
+    }
+    else if (z > canvasDepth - hideObjDelay - popLength){
+        let howFar = canvasDepth - hideObjDelay - z
+        let scaleValue = ((vanishingPoint.z - popEnd) / (vanishingPoint.z + popEnd))/popLength
+        scale = howFar*scaleValue
+    }
     return(scale)
 }

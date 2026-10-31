@@ -17,14 +17,7 @@ function draw(){
         const point = adjForPerspective(obj[0], obj[1], obj[2])
         circle(point.x,point.y,50*point.scale)
         obj[2] -= 5
-        const nextPoint = adjForPerspective(obj[0], obj[1], obj[2])
-        const nextDiameter = 50 * nextPoint.scale
-        if (
-            nextPoint.x + nextDiameter / 2 < 0 ||
-            nextPoint.x - nextDiameter / 2 > canvasWidth ||
-            nextPoint.y + nextDiameter / 2 < 0 ||
-            nextPoint.y - nextDiameter / 2 > canvasHeight
-        ){
+        if (obj[2] < 0){
             obj[2] += canvasDepth
         }
     }
