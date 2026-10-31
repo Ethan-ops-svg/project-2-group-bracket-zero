@@ -22,7 +22,7 @@ class ship {
         /*
         loads sprite png
         */
-        this.sprite_sheet = await loadImage("lydiaCode/test.png");
+        this.sprite_sheet = await loadImage("lydiaCode/ship.png");
     }
     draw (x, y, mult) {
         /*
@@ -30,6 +30,7 @@ class ship {
         args:
             x: x coord on screen
             y: y coord on screen
+            mult: scale factor
 
         returns: none
         */
@@ -47,12 +48,10 @@ class ship {
     get_frame() {
         /*
         gets the desired ship frame based on active inputs
-        args:
-            sprite sheet png
+        args: none
         returns:
             P5 image object to draw to screen
         */
-
         if (this.spinning || !this.sprite_sheet) {
             return;
         }
@@ -79,12 +78,10 @@ class ship {
     spin() {
         /*
         plays ship spin animation
-        args:
-            sprite sheet png
+        args: none
         returns:
             p5 image object to draw to screen
         */
-
         if (!this.sprite_sheet) {
             return;
         }

@@ -11,6 +11,18 @@ class Projectile {
     this.radius = PHYSICS.bulletRadius;
     this.speed = PHYSICS.bulletSpeed;
     this.alive = true;
+
+    // SPRITE STUFF //
+    this.spriteW = 25;
+    this.spriteH = 25;
+
+    this.frameX;
+    this.frameY;
+    this.current_frame = 0;
+    this.total_frames = 1;
+
+    this.sprite_sheet;
+    this.load_sheet();
   }
 
   update() {
@@ -26,15 +38,49 @@ class Projectile {
   getPosition() {
     return { x: this.x, y: this.y, z: this.z };
   }
+  
+  async load_sheet() {
+    /*
+    Loads sprite png
+    */
+    this.sprite_sheet = await loadImage("lydiaCode/projectile.png");
+  }
+
+  getFrame() {
+    /*
+    gets the desired frame
+    args: none
+    returns:
+        P5 image object to draw to screen
+    */
+    if (!this.sprite_sheet) {
+        return;
+    }
+    this.frameY = 0;
+    this.frameX = this.current_frame * this.spriteW;
+    if(frameCount % 4 == 0) {
+        if (this.current_frame == this.total_frames) {
+            this.current_frame = 0;
+        } else {
+            this.current_frame ++;
+        }
+    }
+
+    let frame = this.sprite_sheet.get(this.frameX, this.frameY, this.spriteW, this.spriteH);
+    return frame;
+  }
 
   draw() {
     const p = adjForPerspective(this.x, this.y, this.z);
     if (p.scale <= 0 || p.alpha <= 0) return;
-    push();
-    noStroke();
-    fill(255, p.alpha);
-    circle(p.x, p.y, PHYSICS.bulletSize * p.scale);
-    pop();
+    // push();
+    // noStroke();
+    // fill(255, p.alpha);
+    // circle(p.x, p.y, PHYSICS.bulletSize * p.scale);
+    // pop();
+    
+    image(getFrame(), p.x, p.y, this.spriteW*p.scale, this.spriteH*p.scale);
+
   }
 }
 

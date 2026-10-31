@@ -18,7 +18,8 @@ class enemy {
         args:
             x: x coord on screen
             y: y coord on screen
-
+            mult: scale factor
+            
         returns: none
         */
         let currentFrameImg = this.get_frame()
@@ -27,6 +28,12 @@ class enemy {
         }
     }
     get_frame() {
+        /*
+        gets the desired frame
+        args: none
+        returns:
+            P5 image object to draw to screen
+        */
         if (!this.sprite_sheet) {
             return;
         }
