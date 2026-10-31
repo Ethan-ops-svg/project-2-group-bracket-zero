@@ -39,8 +39,9 @@ class enemy {
         }
         this.frameY = 0;
         this.frameX = this.current_frame * this.spriteW;
+
         if(frameCount % 4 == 0) {
-            if (this.current_frame == this.total_frames) {
+            if (this.current_frame === this.total_frames - 1) {
                 this.current_frame = 0;
             } else {
                 this.current_frame ++;
@@ -49,7 +50,6 @@ class enemy {
 
         let frame = this.sprite_sheet.get(this.frameX, this.frameY, this.spriteW, this.spriteH);
         return frame;
-        
     }
 }
 
@@ -64,7 +64,7 @@ class asteroid extends enemy {
         this.frameX;
         this.frameY;
         this.current_frame = 0;
-        this.total_frames = 6;
+        this.total_frames = 8;
         
     }
 }

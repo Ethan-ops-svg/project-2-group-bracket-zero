@@ -3,7 +3,7 @@ let player;
 function setup() {
   createCanvas(400, 400);
   noSmooth(); // important for scaling resolution
-  player = new asteroid();
+  player = new powerup();
   
 }
 
