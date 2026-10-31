@@ -3,7 +3,7 @@ let canvasHeight = 400
 let visionFogLine = 1000
 let fogDepth = 100
 let canvasDepth = 1200
-let vanishingPoint = { x: canvasWidth / 2, y: canvasHeight / 2 , z: canvasDepth}
+let vanishingPoint = { x: 0, y: 0 , z: canvasDepth}
 //I set the size of the canvas to be 400X400, and made the far end (on the z axis) of the canvas 3X the width
 //These numbers are arbitrary, and the code should work with any number set
 //Z is currently set in relation to the viewer, with 0 as the viewer and 1200 as the farthest away point.

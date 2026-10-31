@@ -6,7 +6,6 @@ class ship {
 
         this.physics;
         this.sprite_sheet;
-        this.load_sheet();
 
         this.spriteW = 100;
         this.spriteH = 100;
@@ -15,14 +14,39 @@ class ship {
         this.frameY;
         this.current_frame = 0;
         this.rot = 0;
-        this.total_frames = 3;
+        this.total_frames = 4;
+        this.frames = [];
+
+        this.load_sheet();
 
     }
     async load_sheet() {
         /*
         loads sprite png
         */
-        this.sprite_sheet = await loadImage("lydiaCode/ship.png");
+        // this.sprite_sheet = await loadImage("lydiaCode/ship.png");
+
+        loadImage(
+            "lydiaCode/ship.png",
+            (img) => {
+                console.log("Sprite sheet loaded:", img.width, img.height);
+
+                this.sprite_sheet = img;
+                const gl = drawingContext;
+
+                for (let row = 0; row < 3; row++) {
+                    this.frames[row] = [];
+
+                    for (let col = 0; col < 4; col++) {
+                        const frame = img.get(col * this.spriteW, row * this.spriteH, this.spriteW, this.spriteH);
+                        this.frames[row][col] = frame;
+                    }
+                }
+            },
+            (err) => {
+                console.error("Failed to load ship sprite:", err);
+            }
+        );
     }
     draw (x, y, mult) {
         /*
@@ -52,27 +76,31 @@ class ship {
         returns:
             P5 image object to draw to screen
         */
-        if (this.spinning || !this.sprite_sheet) {
+        if (this.spinning || this.frames.length !== 3) {
             return;
         }
-        if (keyIsDown('a')) {
-        this.frameX = 2*this.spriteW;
 
-        } else if (keyIsDown('d')) {
-        this.frameX = 0;
+        let col;
+        let row;
+
+        if (this.physics.input.left) {
+        col = 2;
+
+        } else if (this.physics.input.right) {
+        col = 0;
 
         } else {
-        this.frameX = this.spriteW;
+        col = 1;
 
         }
 
         if (this.up) {
-        this.frameY = 0;
+        row = 0;
         } else {
-        this.frameY = 2*this.spriteH;
+        row = 2;
         }
 
-        return this.sprite_sheet.get(this.frameX, this.frameY, this.spriteW, this.spriteH);
+        return this.frames[row][col];
 
     }
     spin() {
@@ -82,12 +110,13 @@ class ship {
         returns:
             p5 image object to draw to screen
         */
-        if (!this.sprite_sheet) {
+        if (this.frames.length !== 3) {
             return;
         }
+
         this.frameY = this.spriteH;
-        if(frameCount % 3 == 0) {
-            if (this.current_frame == this.total_frames) {
+        if(frameCount % 3 === 0) {
+            if (this.current_frame == this.total_frames - 1) {
                 this.current_frame = 0;
                 this.rot ++;
             } else {
@@ -96,8 +125,7 @@ class ship {
         }
 
         if (this.rot < 2) { // rotates only twice
-            let frame = this.sprite_sheet.get(this.current_frame * this.spriteW, this.frameY, this.spriteW, this.spriteH);
-            return frame;
+            return this.frames[1][this.current_frame];
         } else {
             this.spinning = false;
         }

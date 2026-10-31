@@ -44,10 +44,10 @@ function getWorldBounds() {
   const w = typeof canvasWidth !== "undefined" ? canvasWidth : 400;
   const h = typeof canvasHeight !== "undefined" ? canvasHeight : 400;
   return {
-    left: PHYSICS.sideMargin,
-    right: w - PHYSICS.sideMargin,
-    ceiling: PHYSICS.surfaceMargin,
-    floor: h - PHYSICS.surfaceMargin,
-    centerX: w / 2,
+    left: -width/2 + PHYSICS.sideMargin,
+    right: width/2 - PHYSICS.sideMargin,
+    ceiling: -height/2 + PHYSICS.sideMargin,
+    floor: height/2 - PHYSICS.surfaceMargin,
+    centerX: 0,
   };
 }

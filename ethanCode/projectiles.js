@@ -72,14 +72,14 @@ class Projectile {
 
   draw() {
     const p = adjForPerspective(this.x, this.y, this.z);
-    if (p.scale <= 0 || p.alpha <= 0) return;
+    if (p.scale <= 0 || p.alpha <= 0 || !this.getFrame()) return;
     // push();
     // noStroke();
     // fill(255, p.alpha);
     // circle(p.x, p.y, PHYSICS.bulletSize * p.scale);
     // pop();
     
-    image(getFrame(), p.x, p.y, this.spriteW*p.scale, this.spriteH*p.scale);
+    image(this.getFrame(), p.x, p.y, this.spriteW*p.scale, this.spriteH*p.scale);
 
   }
 }
