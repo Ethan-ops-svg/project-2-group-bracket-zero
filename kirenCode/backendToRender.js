@@ -1,8 +1,9 @@
-let canvasWidth = 400
+let canvasWidth = 600
 let canvasHeight = 400
-let visionFogLine = 1000
-let fogDepth = 100
-let canvasDepth = 1200
+let canvasDepth = canvasHeight * 3
+let hideObjDelay = 150
+let popLength = 25
+let popEnd = canvasDepth - hideObjDelay - popLength
 let vanishingPoint = { x: canvasWidth / 2, y: canvasHeight / 2 , z: canvasDepth}
 //I set the size of the canvas to be 400X400, and made the far end (on the z axis) of the canvas 3X the width
 //These numbers are arbitrary, and the code should work with any number set
@@ -15,14 +16,17 @@ let vanishingPoint = { x: canvasWidth / 2, y: canvasHeight / 2 , z: canvasDepth}
 //as well as a scale value from 0-1
 function adjForPerspective(x,y,z){
     let scale = (vanishingPoint.z - z) / (vanishingPoint.z + z)
+    if (z > canvasDepth - hideObjDelay){
+        scale = 0
+    }
+    else if (z > canvasDepth - hideObjDelay - popLength){
+        let howFar = canvasDepth - hideObjDelay - z
+        let scaleValue = ((vanishingPoint.z - popEnd) / (vanishingPoint.z + popEnd))/popLength
+        scale = howFar*scaleValue
+    }
     let newX = vanishingPoint.x + (x - vanishingPoint.x) * scale
     let newY = vanishingPoint.y + (y - vanishingPoint.y) * scale
-    let alpha = 255
-    if (z > visionFogLine){
-        //alpha increases from 0 to 255, becoming fully visible at the visionFogLine, and fully invisible fogDepth units beyond that
-        alpha = 255 - ((z - visionFogLine) / fogDepth) * 255
-    }
-    return({ x: newX, y: newY, scale: scale, alpha: alpha })
+    return({ x: newX, y: newY, scale: scale,})
 }
 //Just returns the x value changed based on the objects distance from camera
 function adjX(x,z){
@@ -40,12 +44,4 @@ function adjY(y,z){
 function adjScale(z){
     let scale = (vanishingPoint.z - z) / (vanishingPoint.z + z)
     return(scale)
-}
-//Just returns the alpha value based on the objects distance from camera
-function adjAlpha(z){
-    let alpha = 255
-    if (z > visionFogLine){
-        alpha = 255 - ((z - visionFogLine) / fogDepth) * 255
-    }
-    return(alpha)
 }
