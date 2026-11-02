@@ -29,7 +29,7 @@ async function load_proj_frames() {
 }
 
 class Projectile {
-  constructor(x, y, z) {
+  constructor(x, y, z, shift = 0) {
     this.x = x;
     this.y = y;
     this.z = z;
@@ -37,7 +37,7 @@ class Projectile {
     this.radius = PHYSICS.bulletRadius;
     this.speed = PHYSICS.bulletSpeed;
     this.alive = true;
-
+    this.shift = shift;
     // SPRITE STUFF //
     this.spriteW = 25;
     this.spriteH = 25;
@@ -89,12 +89,13 @@ class Projectile {
 
   draw() {
     imageMode(CENTER);
-    const p = adjForPerspective(this.x, this.y - 30, this.z); // shifted to be infront of ship
+    
+    const p = adjForPerspective(this.x, this.y, this.z);
     if (p.scale <= 0) return;
     
     let currentFrameImg = this.getFrame();
         if (currentFrameImg) {
-            image(currentFrameImg, p.x, p.y, this.spriteW*p.scale, this.spriteH*p.scale)
+            image(currentFrameImg, p.x, p.y + this.shift, this.spriteW*p.scale, this.spriteH*p.scale)
         }
   }
 }
@@ -109,12 +110,21 @@ class Weapon {
   update(owner, firing) {
     if (this.cooldown > 0) this.cooldown--;
 
-    if (firing && this.cooldown <= 0) {
-      this.projectiles.push(new Projectile(owner.x, owner.y, owner.z));
+    if (!owner.spinning && firing && this.cooldown <= 0) {
+      let shift;
+      if (owner.y < 0) { // shifts projectiles to spawn in front of ship
+        shift = 20;
+      } else if (owner.y > 0) {
+        shift = -20;
+      } else {
+        shift = 0;
+      }
+      this.projectiles.push(new Projectile(owner.x, owner.y, owner.z, shift));
       this.cooldown = PHYSICS.fireCooldown;
     }
 
-    for (const p of this.projectiles) p.update();
+    for (const p of this.projectiles) {
+    p.update();}
     this.projectiles = this.projectiles.filter((p) => p.alive);
   }
 

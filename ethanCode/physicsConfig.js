@@ -6,7 +6,7 @@ const PHYSICS = {
   // ---- World layout (matches debugVisuals.js: floor y=375, ceiling y=25) ----
   surfaceMargin: 50, // floor = canvasHeight - margin, ceiling = margin
   sideMargin: 50, // left wall = margin, right wall = canvasWidth - margin
-  playerZ: 100, // fixed depth of the player in front of the viewer (0 = viewer)
+  playerZ: 25, // fixed depth of the player in front of the viewer (0 = viewer)
 
   // ---- Forward / backward (W / S) ----
   // W and S don't move the player in z. They change how fast the world scrolls
@@ -19,7 +19,7 @@ const PHYSICS = {
   depthDrag: 0.95, // multiplier that eases depth speed back to 0 with no input
 
   // ---- Left / right (A / D) ----
-  sideAccel: 0.9,
+  sideAccel: 2,
   sideFriction: 0.8, // multiplier applied each frame with no A/D input
   maxSideSpeed: 6,
 
