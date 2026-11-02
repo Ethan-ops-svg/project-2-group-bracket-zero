@@ -2,6 +2,32 @@
 // Bullets fired while Shift is held. They live in the same x, y, z space as
 // everything else and are drawn through adjForPerspective().
 
+let proj_sheet = null;
+let proj_frames = [];
+
+async function load_proj_frames() {
+  await loadImage(
+        "lydiaCode/projectile.png",
+        (img) => {
+            proj_sheet = img;
+
+            for (let col = 0; col < 2; col++) {
+                proj_frames[col] = img.get(
+                    col * 25,
+                    0,
+                    25,
+                    25
+                );
+            }
+
+            console.log("LOADED FRAMES:", proj_frames.length);
+        },
+        (err) => {
+            console.error("Failed to load projectile sprite:", err);
+        }
+    );
+}
+
 class Projectile {
   constructor(x, y, z) {
     this.x = x;
@@ -19,10 +45,11 @@ class Projectile {
     this.frameX;
     this.frameY;
     this.current_frame = 0;
-    this.total_frames = 1;
+    this.total_frames = 2;
+    this.sprite_sheet = proj_sheet;
+    this.frames = proj_frames;
 
-    this.sprite_sheet;
-    this.load_sheet();
+    this.sprite_sheet = proj_sheet
   }
 
   update() {
@@ -38,13 +65,6 @@ class Projectile {
   getPosition() {
     return { x: this.x, y: this.y, z: this.z };
   }
-  
-  async load_sheet() {
-    /*
-    Loads sprite png
-    */
-    this.sprite_sheet = await loadImage("lydiaCode/projectile.png");
-  }
 
   getFrame() {
     /*
@@ -53,34 +73,29 @@ class Projectile {
     returns:
         P5 image object to draw to screen
     */
-    if (!this.sprite_sheet) {
-        return;
-    }
-    this.frameY = 0;
-    this.frameX = this.current_frame * this.spriteW;
-    if(frameCount % 4 == 0) {
-        if (this.current_frame == this.total_frames) {
-            this.current_frame = 0;
-        } else {
-            this.current_frame ++;
+    if (!this.frames || this.frames.length !== 2) {
+            console.log("NOT 2 FRAMES");
+            return null;
         }
-    }
-
-    let frame = this.sprite_sheet.get(this.frameX, this.frameY, this.spriteW, this.spriteH);
-    return frame;
+        if(frameCount % 4 === 0) {
+            if (this.current_frame === this.total_frames - 1) {
+                this.current_frame = 0;
+            } else {
+                this.current_frame ++;
+            }
+        }
+        return this.frames[this.current_frame];
   }
 
   draw() {
-    const p = adjForPerspective(this.x, this.y, this.z);
-    if (p.scale <= 0 || p.alpha <= 0 || !this.getFrame()) return;
-    // push();
-    // noStroke();
-    // fill(255, p.alpha);
-    // circle(p.x, p.y, PHYSICS.bulletSize * p.scale);
-    // pop();
+    imageMode(CENTER);
+    const p = adjForPerspective(this.x, this.y - 30, this.z); // shifted to be infront of ship
+    if (p.scale <= 0) return;
     
-    image(this.getFrame(), p.x, p.y, this.spriteW*p.scale, this.spriteH*p.scale);
-
+    let currentFrameImg = this.getFrame();
+        if (currentFrameImg) {
+            image(currentFrameImg, p.x, p.y, this.spriteW*p.scale, this.spriteH*p.scale)
+        }
   }
 }
 

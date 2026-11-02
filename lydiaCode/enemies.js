@@ -4,13 +4,29 @@ class enemy {
         this.up = isUp;
         this.sprite_sheet;
         this.fileName = fileName;
+        this.frames = [];
         this.load_sheet();
+        
     }
     async load_sheet() {
         /*
         loads sprite png
         */
-        this.sprite_sheet = await loadImage("lydiaCode/" + this.fileName);
+        loadImage(
+            "lydiaCode/" + this.fileName,
+            (img) => {
+                this.sprite_sheet = img;
+                const gl = drawingContext;
+                for (let col = 0; col < 8; col++) {
+                    const frame = img.get(col * this.spriteW, 0, this.spriteW, this.spriteH);
+                    this.frames[col] = frame;
+                }
+                console.log("LOADED FRAMES")
+            },
+            (err) => {
+                console.error("Failed to load enemy sprite:", err);
+            }
+        );
     }
     draw (x, y, mult) {
         /*
@@ -22,7 +38,7 @@ class enemy {
             
         returns: none
         */
-        let currentFrameImg = this.get_frame()
+        let currentFrameImg = this.get_frame();
         if (currentFrameImg) {
             image(currentFrameImg, x, y, this.spriteW*mult, this.spriteH*mult)
         }
@@ -34,12 +50,10 @@ class enemy {
         returns:
             P5 image object to draw to screen
         */
-        if (!this.sprite_sheet) {
+        if (this.frames.length !== 8) {
+            console.log("NOT 8 FRAMES");
             return;
         }
-        this.frameY = 0;
-        this.frameX = this.current_frame * this.spriteW;
-
         if(frameCount % 4 == 0) {
             if (this.current_frame === this.total_frames - 1) {
                 this.current_frame = 0;
@@ -47,9 +61,7 @@ class enemy {
                 this.current_frame ++;
             }
         }
-
-        let frame = this.sprite_sheet.get(this.frameX, this.frameY, this.spriteW, this.spriteH);
-        return frame;
+        return this.frames[this.current_frame];
     }
 }
 
@@ -65,6 +77,5 @@ class asteroid extends enemy {
         this.frameY;
         this.current_frame = 0;
         this.total_frames = 8;
-        
     }
 }

@@ -51,5 +51,9 @@ function adjScale(z){
         let scaleValue = ((vanishingPoint.z - popEnd) / (vanishingPoint.z + popEnd))/popLength
         scale = howFar*scaleValue
     }
+
+    if (scale === 0) {
+        scale = 0.05;
+    }
     return(scale)
 }

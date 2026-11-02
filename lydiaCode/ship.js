@@ -22,15 +22,11 @@ class ship {
     }
     async load_sheet() {
         /*
-        loads sprite png
+        loads all sprites
         */
-        // this.sprite_sheet = await loadImage("lydiaCode/ship.png");
-
         loadImage(
             "lydiaCode/ship.png",
             (img) => {
-                console.log("Sprite sheet loaded:", img.width, img.height);
-
                 this.sprite_sheet = img;
                 const gl = drawingContext;
 

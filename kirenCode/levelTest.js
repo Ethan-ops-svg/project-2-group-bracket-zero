@@ -1,6 +1,7 @@
 let enemySkeletons = []
 let enemyImage = []
 let spawn_timer = 0;
+
 function setup(){
     enemySkeletons.push(new EnemyBody(Math.random()*canvasWidth*2 - canvasWidth,canvasDepth,25,false))
     enemyImage.push(new asteroid(false));
@@ -27,6 +28,7 @@ function draw(){
             enemySkeletons[i].z = canvasDepth
 
             enemySkeletons[i].x = Math.random() * canvasWidth * 2 - canvasWidth;
+            enemySkeletons[i].y = random(-canvasHeight, canvasHeight);
         }
     }
 }

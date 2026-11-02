@@ -1,6 +1,8 @@
 let p;
+
 function setup() {
     createCanvas(800, 400, WEBGL);
+    load_proj_frames();
 
     p = new Player();
 }

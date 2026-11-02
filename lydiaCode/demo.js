@@ -3,7 +3,8 @@ let player;
 function setup() {
   createCanvas(400, 400);
   noSmooth(); // important for scaling resolution
-  player = new powerup();
+  power = new powerup();
+  bad = new asteroid();
   
 }
 
@@ -23,5 +24,6 @@ function draw() {
 
   mult = abs(sin(frameCount/60) + 1); // scaling factor, for demonstration
 
-  player.draw(200, 200, mult);
+  power.draw(125, 200, mult);
+  bad.draw(275, 200, mult);
 }
