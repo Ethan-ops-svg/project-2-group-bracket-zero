@@ -4,8 +4,8 @@
 
 const PHYSICS = {
   // ---- World layout (matches debugVisuals.js: floor y=375, ceiling y=25) ----
-  surfaceMargin: 25, // floor = canvasHeight - margin, ceiling = margin
-  sideMargin: 25, // left wall = margin, right wall = canvasWidth - margin
+  surfaceMargin: 50, // floor = canvasHeight - margin, ceiling = margin
+  sideMargin: 50, // left wall = margin, right wall = canvasWidth - margin
   playerZ: 100, // fixed depth of the player in front of the viewer (0 = viewer)
 
   // ---- Forward / backward (W / S) ----
@@ -43,11 +43,12 @@ const PHYSICS = {
 function getWorldBounds() {
   const w = typeof canvasWidth !== "undefined" ? canvasWidth : 400;
   const h = typeof canvasHeight !== "undefined" ? canvasHeight : 400;
+
   return {
-    left: -width/2 + PHYSICS.sideMargin,
-    right: width/2 - PHYSICS.sideMargin,
-    ceiling: -height/2 + PHYSICS.sideMargin,
-    floor: height/2 - PHYSICS.surfaceMargin,
+    left: -w + PHYSICS.sideMargin,
+    right: w - PHYSICS.sideMargin,
+    ceiling: -h + PHYSICS.surfaceMargin,
+    floor: h - PHYSICS.surfaceMargin,
     centerX: 0,
   };
 }

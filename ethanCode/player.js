@@ -174,24 +174,24 @@ class Player {
   drawShip() {
     const p = adjForPerspective(this.x, this.y, this.z);
 
-    if (p.scale <= 0 || p.alpha <= 0) return;
+    if (p.scale <= 0) return;
 
     push();
     imageMode(CENTER);
-    tint(255, p.alpha);
+    //tint(255, p.alpha);
 
     if (!this.ship.sprite_sheet) {
       // Sheet still loading: draw a placeholder circle.
       noStroke();
-      fill(255, p.alpha);
+      //fill(255, p.alpha);
       circle(p.x, p.y, this.ship.spriteW * p.scale);
     } else {
       const wasSpinning = this.ship.spinning;
-      this.ship.draw(p.x, p.y, p.scale);
+      this.ship.draw(this.x, this.y, p.scale);
       // ship.spin() returns nothing on the frame the animation ends, which
       // would leave the ship invisible for one frame. Draw the idle frame.
       if (wasSpinning && !this.ship.spinning) {
-        this.ship.draw(p.x, p.y, 1);
+        this.ship.draw(this.x, this.y, p.scale);
       }
     }
     pop();
