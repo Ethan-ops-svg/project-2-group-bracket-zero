@@ -52,7 +52,7 @@ function adjScale(z){
         scale = howFar*scaleValue
     }
 
-    if (scale === 0) {
+    if (scale === 0) { // breaks if actually 0
         scale = 0.05;
     }
     return(scale)

@@ -28,7 +28,6 @@ class powerup {
                     const frame = img.get(col * this.spriteW, 0, this.spriteW, this.spriteH);
                     this.frames[col] = frame;
                 }
-                console.log("LOADED FRAMES")
             },
             (err) => {
                 console.error("Failed to load poewrup sprite:", err);
@@ -58,7 +57,6 @@ class powerup {
             P5 image object to draw to screen
         */
         if (this.frames.length !== 4) {
-            console.log("NOT 4 FRAMES");
             return;
         }
         if(frameCount % 4 == 0) {

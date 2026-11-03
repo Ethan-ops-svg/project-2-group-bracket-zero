@@ -21,7 +21,6 @@ class enemy {
                     const frame = img.get(col * this.spriteW, 0, this.spriteW, this.spriteH);
                     this.frames[col] = frame;
                 }
-                console.log("LOADED FRAMES")
             },
             (err) => {
                 console.error("Failed to load enemy sprite:", err);
@@ -38,6 +37,9 @@ class enemy {
             
         returns: none
         */
+        if (mult > 0.1) {
+            this.hbox = 26;
+        }
         let currentFrameImg = this.get_frame();
         if (currentFrameImg) {
             image(currentFrameImg, x, y, this.spriteW*mult, this.spriteH*mult)
@@ -51,7 +53,6 @@ class enemy {
             P5 image object to draw to screen
         */
         if (this.frames.length !== 8) {
-            console.log("NOT 8 FRAMES");
             return;
         }
         if(frameCount % 4 == 0) {
@@ -69,7 +70,7 @@ class asteroid extends enemy {
     constructor (isUp) {
         super('asteroid.png', isUp);
 
-        this.hbox = 26; // radius of hitbox
+        this.hbox = 0; // radius of hitbox
         this.spriteW = 100;
         this.spriteH = 100;
 

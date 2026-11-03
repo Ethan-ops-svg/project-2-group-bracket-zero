@@ -28,6 +28,6 @@ class EnemyBody {
     this.prevZ = this.z;
     this.z -= scrollSpeed;
     // Past the viewer: gone.
-    if (this.z < 0) this.alive = false;
+    if (this.z <= 0) this.alive = false;
   }
 }

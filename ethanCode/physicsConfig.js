@@ -30,7 +30,7 @@ const PHYSICS = {
 
   // ---- Shooting (hold Shift) ----
   fireCooldown: 8, // frames between shots
-  bulletSpeed: 20, // z units/frame, away from the viewer
+  bulletSpeed: 10, // z units/frame, away from the viewer
   bulletSize: 12, // diameter at scale 1
   bulletRadius: 6, // hit radius at scale 1
 

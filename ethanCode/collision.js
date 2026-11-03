@@ -7,6 +7,9 @@
 // units per frame (bullets, fast scrolling enemies) can't skip over a target.
 
 function hitTest(a, b) {
+  if (a.hbox === 0 || b.hbox === 0) {
+    return false;
+  }
   const dx = a.x - b.x;
   const dy = a.y - b.y;
   const r = a.radius + b.radius;

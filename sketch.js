@@ -17,12 +17,37 @@ function setup() {
 
 function draw() {
     background(0);
+
+    stroke(255, 255, 255, 100);
+    strokeWeight(1);
+    line(0, 0, 0, -800, 400, 0);
+    line(0, 0, 0, 800, 400, 0);
+
+    line(0, 0, 0, -800, -400, 0);
+    line(0, 0, 0, 800, -400, 0);
+
+    line(0, 0, 0, -300, 400, 0);
+    line(0, 0, 0, 300, 400, 0);
+
+    line(0, 0, 0, -300, -400, 0);
+    line(0, 0, 0, 300, -400, 0);
+
+    line(0, 0, 0, 0, -400, 0);
+    line(0, 0, 0, 0, 400, 0);
+
+    noStroke();
+
     imageMode(CENTER);
     spawn_timer++;
     if (spawn_timer % PHYSICS.spawnInterval === 0 && enemySkeletons.length < 10) {
         const isUp = Math.random() < 0.5;
         enemySkeletons.push(
-            new EnemyBody(Math.random() * canvasWidth * 2 - canvasWidth, canvasDepth, 25, isUp)
+            new EnemyBody(
+                constrain(Math.random() * canvasWidth * 2 - canvasWidth, getWorldBounds().left, getWorldBounds().right),
+                canvasDepth,
+                25,
+                isUp
+            )
         );
         enemyImage.push(new asteroid(false));
     }
@@ -54,6 +79,20 @@ function draw() {
             const scale = adjScale(position.z);
 
             enemyImage[i].draw(pointX, pointY, scale);
+        }
+    }
+
+    for (let i = 0; i < p.weapon.projectiles.length; i++) {
+        for (let j = 0; j < enemySkeletons.length; j++) {
+            if (hitTest(p.weapon.projectiles[i], enemySkeletons[j])) {
+                enemySkeletons.splice(j, 1);
+                enemyImage.splice(j, 1);
+                j--;
+
+                p.weapon.projectiles[i].alive = false;
+                i--;
+                continue;
+            }
         }
     }
     for (const enemy of enemySkeletons) {

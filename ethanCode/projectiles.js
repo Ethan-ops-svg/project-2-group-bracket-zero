@@ -19,8 +19,6 @@ async function load_proj_frames() {
                     25
                 );
             }
-
-            console.log("LOADED FRAMES:", proj_frames.length);
         },
         (err) => {
             console.error("Failed to load projectile sprite:", err);
@@ -74,10 +72,9 @@ class Projectile {
         P5 image object to draw to screen
     */
     if (!this.frames || this.frames.length !== 2) {
-            console.log("NOT 2 FRAMES");
             return null;
         }
-        if(frameCount % 4 === 0) {
+        if(frameCount % 5 === 0) {
             if (this.current_frame === this.total_frames - 1) {
                 this.current_frame = 0;
             } else {
@@ -95,7 +92,7 @@ class Projectile {
     
     let currentFrameImg = this.getFrame();
         if (currentFrameImg) {
-            image(currentFrameImg, p.x, p.y + this.shift, this.spriteW*p.scale, this.spriteH*p.scale)
+            image(currentFrameImg, p.x, p.y + this.shift*p.scale, this.spriteW*p.scale, this.spriteH*p.scale)
         }
   }
 }
@@ -113,9 +110,9 @@ class Weapon {
     if (!owner.spinning && firing && this.cooldown <= 0) {
       let shift;
       if (owner.y < 0) { // shifts projectiles to spawn in front of ship
-        shift = 20;
+        shift = 25;
       } else if (owner.y > 0) {
-        shift = -20;
+        shift = -25;
       } else {
         shift = 0;
       }
