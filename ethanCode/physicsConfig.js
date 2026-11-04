@@ -12,6 +12,7 @@ const PHYSICS = {
   // W and S don't move the player in z. They change how fast the world scrolls
   // toward the viewer, so enemies close in faster (W) or slower (S).
   baseScrollSpeed: 5, // z units/frame the world moves at with no input
+  baseSpeedIncrease: 0.001, // increase base world speed as game progresses, difficulty scaling
   maxForwardSpeed: 6, // extra scroll speed from W  -> world speed up to 11
   maxBackwardSpeed: 3, // reduced scroll speed from S -> world speed down to 2
   forwardAccel: 0.25,

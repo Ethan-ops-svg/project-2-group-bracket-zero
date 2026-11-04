@@ -15,11 +15,16 @@ function hitTest(a, b) {
   const r = a.radius + b.radius;
   if (dx * dx + dy * dy > r * r) return false;
 
+  const z_mult = 0.1;
+  const aZ = a.radius * z_mult;
+  const bZ = b.radius * z_mult;
+
   const aPrev = a.prevZ !== undefined ? a.prevZ : a.z;
   const bPrev = b.prevZ !== undefined ? b.prevZ : b.z;
-  const aLo = Math.min(aPrev, a.z) - a.radius;
-  const aHi = Math.max(aPrev, a.z) + a.radius;
-  const bLo = Math.min(bPrev, b.z) - b.radius;
-  const bHi = Math.max(bPrev, b.z) + b.radius;
+
+  const aLo = Math.min(aPrev, a.z) - aZ;
+  const aHi = Math.max(aPrev, a.z) + aZ;
+  const bLo = Math.min(bPrev, b.z) - bZ;
+  const bHi = Math.max(bPrev, b.z) + bZ;
   return aLo <= bHi && bLo <= aHi;
 }
