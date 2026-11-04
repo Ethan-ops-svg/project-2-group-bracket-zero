@@ -3,9 +3,9 @@
 // Units are canvas pixels per frame (assumes ~60 fps).
 
 const PHYSICS = {
-  // ---- World layout (matches debugVisuals.js: floor y=375, ceiling y=25) ----
-  surfaceMargin: 50, // floor = canvasHeight - margin, ceiling = margin
-  sideMargin: 50, // left wall = margin, right wall = canvasWidth - margin
+  // ---- World layout (centered on 0: x from -width to width, y from -height to height) ----
+  surfaceMargin: 50, // floor = canvasHeight - margin, ceiling = -canvasHeight + margin
+  sideMargin: 50, // left wall = -canvasWidth + margin, right wall = canvasWidth - margin
   playerZ: 25, // fixed depth of the player in front of the viewer (0 = viewer)
 
   // ---- Forward / backward (W / S) ----
@@ -36,6 +36,20 @@ const PHYSICS = {
 
   // ---- Enemies ----
   spawnInterval: 90, // frames between asteroid spawns in sketch.js
+
+  // ---- Lives ----
+  startingLives: 3,
+  maxLives: 5,
+
+  // ---- Power-ups ----
+  powerUpInterval: 600, // frames between power-up spawns (600 = every 10 s)
+  invincibilityFrames: 300, // 5 s
+  spreadShotFrames: 480, // 8 s
+  spreadShotSpeed: 3, // sideways speed of the outer bullets (x units/frame)
+  powerUpNoticeFrames: 90, // how long the "SPREAD SHOT" text stays up
+  // For testing: set to "invincibility", "extraLife" or "spreadShot" to make
+  // every power-up that type. null = random.
+  testPowerUpType: null,
 };
 
 // Edges of the playable area, computed from the renderer's canvas size so

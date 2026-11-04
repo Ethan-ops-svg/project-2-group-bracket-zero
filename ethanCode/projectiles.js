@@ -7,30 +7,35 @@ let proj_frames = [];
 
 async function load_proj_frames() {
   await loadImage(
-        "lydiaCode/projectile.png",
-        (img) => {
-            proj_sheet = img;
+    "lydiaCode/projectile.png",
+    (img) => {
+      proj_sheet = img;
 
-            for (let col = 0; col < 2; col++) {
-                proj_frames[col] = img.get(
-                    col * 25,
-                    0,
-                    25,
-                    25
-                );
-            }
-        },
-        (err) => {
-            console.error("Failed to load projectile sprite:", err);
-        }
-    );
+      for (let col = 0; col < 2; col++) {
+        proj_frames[col] = img.get(
+          col * 25,
+          0,
+          25,
+          25
+        );
+      }
+
+      console.log("LOADED FRAMES:", proj_frames.length);
+    },
+    (err) => {
+      console.error("Failed to load projectile sprite:", err);
+    }
+  );
 }
 
 class Projectile {
-  constructor(x, y, z, shift = 0) {
+  // shift: vertical screen offset so the bullet spawns in front of the ship.
+  // vx: sideways speed in x units/frame (0 = straight ahead). Used by spread shot.
+  constructor(x, y, z, shift = 0, vx = 0) {
     this.x = x;
     this.y = y;
     this.z = z;
+    this.vx = vx;
     this.prevZ = z; // z at the start of this frame, for swept collision
     this.radius = PHYSICS.bulletRadius;
     this.speed = PHYSICS.bulletSpeed;
@@ -53,6 +58,7 @@ class Projectile {
   update() {
     this.prevZ = this.z;
     this.z += this.speed; // away from the viewer
+    this.x += this.vx;
     // Retire once fully faded out by the fog.
     const fogEnd =
       (typeof visionFogLine !== "undefined" ? visionFogLine : 1000) +
@@ -72,28 +78,27 @@ class Projectile {
         P5 image object to draw to screen
     */
     if (!this.frames || this.frames.length !== 2) {
-            return null;
-        }
-        if(frameCount % 5 === 0) {
-            if (this.current_frame === this.total_frames - 1) {
-                this.current_frame = 0;
-            } else {
-                this.current_frame ++;
-            }
-        }
-        return this.frames[this.current_frame];
+      console.log("NOT 2 FRAMES");
+      return null;
+    }
+    if (frameCount % 4 === 0) {
+      if (this.current_frame === this.total_frames - 1) {
+        this.current_frame = 0;
+      } else {
+        this.current_frame++;
+      }
+    }
+    return this.frames[this.current_frame];
   }
 
   draw() {
     imageMode(CENTER);
-    
     const p = adjForPerspective(this.x, this.y, this.z);
     if (p.scale <= 0) return;
-    
     let currentFrameImg = this.getFrame();
-        if (currentFrameImg) {
-            image(currentFrameImg, p.x, p.y + this.shift*p.scale, this.spriteW*p.scale, this.spriteH*p.scale)
-        }
+    if (currentFrameImg) {
+      image(currentFrameImg, p.x, p.y + this.shift*p.scale, this.spriteW * p.scale, this.spriteH * p.scale)
+    }
   }
 }
 
@@ -101,6 +106,11 @@ class Weapon {
   constructor() {
     this.projectiles = [];
     this.cooldown = 0;
+    this.spread = false; // true while the spread shot power-up is active
+
+    // Make sure the bullet sprite is loading. (Harmless if sketch.js also
+    // calls load_proj_frames(); it only runs here if no frames exist yet.)
+    if (proj_frames.length === 0) load_proj_frames();
   }
 
   // firing: true while Shift is held. owner: anything with x, y, z.
@@ -117,11 +127,18 @@ class Weapon {
         shift = 0;
       }
       this.projectiles.push(new Projectile(owner.x, owner.y, owner.z, shift));
+      if (this.spread) {
+        // Two extra bullets angled left and right.
+        const v = PHYSICS.spreadShotSpeed;
+        this.projectiles.push(new Projectile(owner.x, owner.y, owner.z, shift, -v));
+        this.projectiles.push(new Projectile(owner.x, owner.y, owner.z, shift, v));
+      }
       this.cooldown = PHYSICS.fireCooldown;
     }
 
     for (const p of this.projectiles) {
-    p.update();}
+      p.update();
+    }
     this.projectiles = this.projectiles.filter((p) => p.alive);
   }
 

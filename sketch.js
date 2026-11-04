@@ -1,6 +1,12 @@
 let p;
+let powerUps;
+
 let enemySkeletons = [];
 let enemyImage = [];
+
+let powerSkeletons = [];
+let powerImage = [];
+
 let spawn_timer = 0;
 let lives_remaining = 3;
 let livesLabel;
@@ -8,6 +14,8 @@ let livesLabel;
 function setup() {
     createCanvas(800, 400, WEBGL);
     load_proj_frames();
+
+    powerUps = new PowerUpManager;
 
     livesLabel = createDiv(`Lives: ${lives_remaining}`);
     livesLabel.position(16, 16);
@@ -51,6 +59,18 @@ function draw() {
         );
         enemyImage.push(new asteroid(false));
     }
+    if (spawn_timer % 800 === 0 && powerSkeletons.length < 4) {
+        powerSkeletons.push(
+            new PowerUpBody(
+                constrain(Math.random() * canvasWidth * 2 - canvasWidth, getWorldBounds().left, getWorldBounds().right),
+                canvasDepth,
+                17,
+                powerUps.pickType()
+            )
+        );
+        powerImage.push(new powerup(false));
+
+    }
     for (let i = 0; i < enemySkeletons.length; i++) {
         if (enemySkeletons[i].z > 0) {
             const position = enemySkeletons[i].getPosition();
@@ -61,8 +81,18 @@ function draw() {
             enemyImage[i].draw(pointX, pointY, scale);
         }
     }
+    for (let i = 0; i < powerSkeletons.length; i++) {
+        const position = powerSkeletons[i].getPosition();
+        const pointX = adjX(position.x, position.z);
+        const pointY = adjY(position.y, position.z);
+        const scale = adjScale(position.z);
+
+        powerImage[i].draw(pointX, pointY, scale);
+    }
     p.draw();
+    powerUps.update(p);
     p.update();
+
     for (let i = 0; i < enemySkeletons.length; i++) {
         if (hitTest(p, enemySkeletons[i])) {
             lives_remaining--;
@@ -82,17 +112,39 @@ function draw() {
         }
     }
 
-    for (let i = 0; i < p.weapon.projectiles.length; i++) {
-        for (let j = 0; j < enemySkeletons.length; j++) {
-            if (hitTest(p.weapon.projectiles[i], enemySkeletons[j])) {
+    for (const power of powerSkeletons) {
+        power.update(3);
+
+        if (power.z < -200) {
+            power.z = canvasDepth;
+        }
+    }
+
+    for (let i = p.weapon.projectiles.length - 1; i >= 0; i--) {
+        const projectile = p.weapon.projectiles[i];
+        if (!projectile || !projectile.alive) continue;
+
+        for (let j = enemySkeletons.length; j >= 0; j--) {
+            const enemy = enemySkeletons[j];
+            if (!enemy) continue;
+
+            if (hitTest(projectile, enemy)) {
                 enemySkeletons.splice(j, 1);
                 enemyImage.splice(j, 1);
-                j--;
+                projectile.alive = false;
 
-                p.weapon.projectiles[i].alive = false;
-                i--;
-                continue;
+                break;
             }
+        }
+    }
+    for (let i = 0; i < powerSkeletons.length; i++) {
+        if (hitTest(p, powerSkeletons[i])) {
+            powerUps.collect(powerSkeletons[i].type, p);
+
+            powerSkeletons.splice(i, 1);
+            powerImage.splice(i, 1);
+
+            i--;
         }
     }
     for (const enemy of enemySkeletons) {

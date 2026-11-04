@@ -33,6 +33,7 @@ class Player {
     this.grounded = true;
 
     this.distance = 0; // total world distance scrolled, handy for score
+    this.invincible = false; // set by PowerUpManager; the ship blinks while true
 
     this.input = new InputState();
     this.weapon = new Weapon();
@@ -57,6 +58,12 @@ class Player {
 
   get prevZ() {
     return this.z;
+  }
+
+  // True while the ship's spin animation plays. Weapon.update() reads
+  // owner.spinning, so the player can't shoot mid-spin.
+  get spinning() {
+    return this.ship.spinning;
   }
 
   // How far the world moves toward the viewer this frame. Enemies and
@@ -175,6 +182,9 @@ class Player {
     const p = adjForPerspective(this.x, this.y, this.z);
 
     if (p.scale <= 0) return;
+
+    // Blink while invincible (skip drawing every other 4 frames).
+    if (this.invincible && Math.floor(frameCount / 4) % 2 === 0) return;
 
     push();
     imageMode(CENTER);
